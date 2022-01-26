@@ -1,0 +1,56 @@
+{
+    "name": "fetal-brain",
+    "label": "Fetal MRI Anatomy Measurement - OHIF",
+    "description": "Deep Learning Model for Automatic Fetal Brain Landmark Localization in MRI.",
+    "version": "0.4.2f",
+    "author": "Xuchu Liu",
+    "maintainer": "xuchu_liu@rush.edu",
+    "cite": "God loves All Beings",
+    "license": "Apache-2.0",
+    "url": "https://achillesy.github.io/",
+    "source": "https://github.com/Achillesy/Flywheel_gear_MRI",
+    "custom": {
+        "gear-builder": {
+            "category": "analysis",
+            "image": "ahsoka/tensorflow-rush:0.3.0"
+        },
+        "flywheel": {
+            "suite": "Metadata I/O"
+        },
+        "generator": "I have a fly, I have a wheel. Uh! Fly-Wheel!"
+    },
+    "inputs": {
+        "input_sag": {
+            "base": "file",
+            "type": {
+                "enum": [
+                    "dicom.zip"
+                ]
+            },
+            "description": "Selected SAG series",
+            "optional": true
+        },
+        "key": {
+            "base": "api-key"
+        }
+    },
+    "config": {
+        "gear_log_level": {
+            "description": "The level at which the gear will log.",
+            "type": "string",
+            "enum": [
+                "INFO",
+                "DEBUG"
+            ],
+            "default": "INFO"
+        },
+        "dry_run": {
+            "description": "Only log what changes would be made, do not update anything.",
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "environment": {
+        "FLYWHEEL": "/flywheel/v0"
+    }
+}

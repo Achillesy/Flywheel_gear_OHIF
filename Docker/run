@@ -1,0 +1,32 @@
+#! /bin/bash
+# Run FETAL MRI gear
+
+# Configure the ENV
+export LC_ALL=C.UTF-8
+
+###############################################################################
+# Configure paths
+FLYWHEEL_BASE=/flywheel/v0
+OUTPUT_DIR=$FLYWHEEL_BASE/output
+INPUT_DIR=$FLYWHEEL_BASE/input
+CONFIG_FILE=$FLYWHEEL_BASE/config.json
+MANIFEST_FILE=$FLYWHEEL_BASE/manifest.json
+
+cd $FLYWHEEL_BASE
+# pwd
+
+###############################################################################
+## show config.json
+# echo -e "=== cat config.json ==="
+# cat $FLYWHEEL_BASE/config.json
+
+###############################################################################
+echo -e "===  Import to OHIF ... ==="
+echo -e "python ohifimport.py"
+python ohifimport.py
+# Check status code and die
+if [[ $? != 0 ]]; then
+  echo -e "Problem encountered during import to ohifViewer!"
+  exit 1
+fi
+echo -e "=== Import to OHIF Done! ==="
