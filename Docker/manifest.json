@@ -1,18 +1,18 @@
 {
-    "name": "fetal-brain",
+    "name": "fetal-brain-ohif",
     "label": "Fetal MRI Anatomy Measurement - OHIF",
     "description": "Deep Learning Model for Automatic Fetal Brain Landmark Localization in MRI.",
-    "version": "0.4.2f",
+    "version": "0.4.3a",
     "author": "Xuchu Liu",
     "maintainer": "xuchu_liu@rush.edu",
     "cite": "God loves All Beings",
     "license": "Apache-2.0",
     "url": "https://achillesy.github.io/",
-    "source": "https://github.com/Achillesy/Flywheel_gear_MRI",
+    "source": "https://github.com/Achillesy/Flywheel_gear_OHIF",
     "custom": {
         "gear-builder": {
             "category": "analysis",
-            "image": "ahsoka/tensorflow-rush:0.3.0"
+            "image": "ahsoka/python-rush:3.7.12"
         },
         "flywheel": {
             "suite": "Metadata I/O"
@@ -20,15 +20,15 @@
         "generator": "I have a fly, I have a wheel. Uh! Fly-Wheel!"
     },
     "inputs": {
-        "input_sag": {
+        "json_file": {
             "base": "file",
             "type": {
                 "enum": [
-                    "dicom.zip"
+                    ".json"
                 ]
             },
-            "description": "Selected SAG series",
-            "optional": true
+            "description": "Selected AI json file",
+            "optional": false
         },
         "key": {
             "base": "api-key"

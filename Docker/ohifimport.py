@@ -2,7 +2,6 @@ from pathlib import Path
 import pathvalidate as pv
 import sys
 import logging
-import zipfile
 
 import flywheel
 import flywheel_gear_toolkit as gt
@@ -12,7 +11,7 @@ from utils import load_data as ld, import_data as id, csv_utils as cu
 log = logging.getLogger()
 
 
-def main(sag_file, api_key, dry_run, output_dir, destination):
+def main(json_file, api_key, dry_run, output_dir, destination):
 
     exit_status = 0
 
@@ -20,53 +19,22 @@ def main(sag_file, api_key, dry_run, output_dir, destination):
         # Initialize the flywheel client using an API-ket
         fw = flywheel.Client(api_key)
 
-        destination = fw.get(destination["id"])
-        # group = fw.get_group(destination.parents.group)
-        # project = fw.get_project(destination.parents.project)
+        destination = fw.get(destination['id'])
+        group = fw.get_group(destination.parents.group)
+        project = fw.get_project(destination.parents.project)
+        log.debug(f'working in project {project.label}')
 
-        cur_files = []
-        if sag_file is None or not Path(sag_file).exists():
-            cur_session = fw.get_session(destination.parents.session)
-            cur_acquisitions = cur_session.acquisitions()
-            for cur_acquisition in cur_acquisitions:
-                for cur_file in cur_acquisition.files:
-                    if cur_file.type == 'dicom':
-                        cur_files.append(cur_file)
-        else:
-            cur_files.append(sag_file)
-        
-        sagzip_files = []
-        for cur_file in cur_files:
-            low_name = cur_file.name.lower()
-            if low_name.find(".dicom.zip") > 0 and low_name.find('sag') >= 0:
-                file_name = Path(cur_file.name)
-                sagzip_name = file_name.stem
-                sagzip_file = pv.sanitize_filename(sagzip_name)
-                sagzip_files.append(sagzip_file)
+        # We now assume that this data is being uploaded to the group/project that the gear is being run on.
 
-        for sagzip_file in sagzip_files:
-            zFile = zipfile.ZipFile("sagzip_file", "r")
-            for fileM in zFile.namelist():
-                zFile.extract(fileM, "/tmp/DZIP")
-
-        # log.debug(f"destination {destination}")
-        # log.debug(f'group {destination.parents.group}')
-        # log.debug(f"working in project {project.label}")
-
-        # log.debug(f'sag_file {sag_file}')
-        # log.debug(f'api_key {api_key}')
-        # log.debug(f'output_dir {output_dir}')
-
-        # # We now assume that this data is being uploaded to the group/project that the gear is being run on.
-
-        # # import the csv file as a dataframe
-        # df = ld.load_text_dataframe(csv_file, first_row, delimiter)
+        # import the json file
+        df = ld.load_json_dataframe(json_file)
+        log.debug(df.info())
 
         # # Format the data for ROI's from the data headers and upload to flywheel
         # df = id.import_data(fw, df, group, project, dry_run)
 
         # # Save a report
-        # cu.save_df_to_csv(df, output_dir)
+        # cu.save_df_to_json(df, output_dir)
 
     except Exception as e:
         log.exception(e)
@@ -92,8 +60,26 @@ def process_gear_inputs(context):
         context.init_logging("debug")
     context.log_config()
 
-    # Get the path of the CSV file provided by the user
-    sag_file = context.get_input_path("input_sag")
+    # Get the path of the json file provided by the user
+    json_file = context.get_input_path("json_file")
+
+    # The gear shouldn't run if this isn't provided but we check anyway.
+    if json_file is None or not Path(json_file).exists():
+        log.error("No file provided or file does not exist")
+        raise Exception("No valid json file")
+
+    # Pathify `json_file` as it is currently a string, and extract data parts.
+    json_file = Path(json_file)
+    name = json_file.stem
+    valid_name = pv.sanitize_filename(name)
+
+    if len(valid_name) == 0:
+        log.error(
+            "You made your filename entirely out of invalid characters."
+            "Just go home and think about that."
+            "You are a danger to computers."
+        )
+        raise Exception("Invalid json file name")
 
     # Extract the various config options from the gear's config.json file.
     # These options are created in the manifest and set by the user upon runtime.
@@ -110,14 +96,14 @@ def process_gear_inputs(context):
     destination = context.destination
     output_dir = context.output_dir
 
-    return sag_file, api_key, dry_run, output_dir, destination
+    return json_file, api_key, dry_run, output_dir, destination
 
 
 if __name__ == "__main__":
 
-    (sag_file, api_key, dry_run, output_dir, destination) = process_gear_inputs(
+    (json_file, api_key, dry_run, output_dir, destination) = process_gear_inputs(
         gt.GearToolkitContext()
     )
 
-    result = main(sag_file, api_key, dry_run, output_dir, destination)
+    result = main(json_file, api_key, dry_run, output_dir, destination)
     sys.exit(result)

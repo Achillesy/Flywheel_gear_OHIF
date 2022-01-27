@@ -1,4 +1,5 @@
 import pandas as pd
+import json
 import logging
 
 log = logging.getLogger(__name__)
@@ -32,6 +33,21 @@ def load_text_dataframe(df_path, firstrow_spec, delimiter_spec):
 
     return df
 
+def load_json_dataframe(df_path):
+    jf = open(df_path, 'r')
+    jsondata = json.load(jf)
+    jf.close
+    df = pd.DataFrame(jsondata)
+    
+    return df
+# {
+# 	"Pons": {
+# 		"desp": "Pons"
+# 	},
+# 	"Vermis": {
+# 		"desp": "Pons2"
+# 	}
+# }
 
 def validate_df(df, object_col):
 
