@@ -2,16 +2,17 @@ from pathlib import Path
 import pathvalidate as pv
 import sys
 import logging
+import json
 
 import flywheel
 import flywheel_gear_toolkit as gt
 
-from utils import load_data as ld, import_data as id, csv_utils as cu
+from utils import import_data as id, csv_utils as cu
 
 log = logging.getLogger()
 
 
-def main(json_file, api_key, dry_run, output_dir, destination):
+def main(json_data, api_key, dry_run, output_dir, destination):
 
     exit_status = 0
 
@@ -26,11 +27,7 @@ def main(json_file, api_key, dry_run, output_dir, destination):
 
         # We now assume that this data is being uploaded to the group/project that the gear is being run on.
 
-        # import the json file
-        df = ld.load_json_dataframe(json_file)
-        log.debug(df.info())
-
-        # # Format the data for ROI's from the data headers and upload to flywheel
+        # Format the data for ROI's from the data headers and upload to flywheel
         # df = id.import_data(fw, df, group, project, dry_run)
 
         # # Save a report
@@ -81,6 +78,10 @@ def process_gear_inputs(context):
         )
         raise Exception("Invalid json file name")
 
+    jf = open(json_file, 'r')
+    json_data = json.load(jf)
+    jf.close
+
     # Extract the various config options from the gear's config.json file.
     # These options are created in the manifest and set by the user upon runtime.
     dry_run = config.get("dry-run", False)
@@ -96,14 +97,14 @@ def process_gear_inputs(context):
     destination = context.destination
     output_dir = context.output_dir
 
-    return json_file, api_key, dry_run, output_dir, destination
+    return json_data, api_key, dry_run, output_dir, destination
 
 
 if __name__ == "__main__":
 
-    (json_file, api_key, dry_run, output_dir, destination) = process_gear_inputs(
+    (json_data, api_key, dry_run, output_dir, destination) = process_gear_inputs(
         gt.GearToolkitContext()
     )
 
-    result = main(json_file, api_key, dry_run, output_dir, destination)
+    result = main(json_data, api_key, dry_run, output_dir, destination)
     sys.exit(result)
