@@ -12,7 +12,7 @@ from utils import import_data as id, csv_utils as cu
 log = logging.getLogger()
 
 
-def main(json_data, api_key, dry_run, output_dir, destination):
+def main(json_file, api_key, dry_run, output_dir, destination):
 
     exit_status = 0
 
@@ -27,7 +27,6 @@ def main(json_data, api_key, dry_run, output_dir, destination):
 
         # We now assume that this data is being uploaded to the group/project that the gear is being run on.
 
-<<<<<<< HEAD
         # import the json file
         jf = open(json_file, 'r')
         jsondata = json.load(jf)
@@ -35,9 +34,7 @@ def main(json_data, api_key, dry_run, output_dir, destination):
         log.debug(jsondata)
 
         # # Format the data for ROI's from the data headers and upload to flywheel
-=======
         # Format the data for ROI's from the data headers and upload to flywheel
->>>>>>> aff7f5f54b727025cb3ca14eaa6ee0a2ad7d4b7b
         # df = id.import_data(fw, df, group, project, dry_run)
 
         # # Save a report
@@ -88,10 +85,6 @@ def process_gear_inputs(context):
         )
         raise Exception("Invalid json file name")
 
-    jf = open(json_file, 'r')
-    json_data = json.load(jf)
-    jf.close
-
     # Extract the various config options from the gear's config.json file.
     # These options are created in the manifest and set by the user upon runtime.
     dry_run = config.get("dry-run", False)
@@ -107,14 +100,14 @@ def process_gear_inputs(context):
     destination = context.destination
     output_dir = context.output_dir
 
-    return json_data, api_key, dry_run, output_dir, destination
+    return json_file, api_key, dry_run, output_dir, destination
 
 
 if __name__ == "__main__":
 
-    (json_data, api_key, dry_run, output_dir, destination) = process_gear_inputs(
+    (json_file, api_key, dry_run, output_dir, destination) = process_gear_inputs(
         gt.GearToolkitContext()
     )
 
-    result = main(json_data, api_key, dry_run, output_dir, destination)
+    result = main(json_file, api_key, dry_run, output_dir, destination)
     sys.exit(result)

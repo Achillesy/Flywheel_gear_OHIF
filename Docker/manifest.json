@@ -2,7 +2,7 @@
     "name": "fetal-brain-ohif",
     "label": "Fetal MRI Anatomy Measurement - OHIF",
     "description": "Deep Learning Model for Automatic Fetal Brain Landmark Localization in MRI.",
-    "version": "0.4.3c",
+    "version": "0.4.3d",
     "author": "Xuchu Liu",
     "maintainer": "xuchu_liu@rush.edu",
     "cite": "God loves All Beings",
@@ -15,7 +15,7 @@
             "image": "ahsoka/python-rush:3.7.12"
         },
         "flywheel": {
-            "suite": "Metadata I/O"
+            "suite": "TF 2.4.1 Suite"
         },
         "generator": "I have a fly, I have a wheel. Uh! Fly-Wheel!"
     },
