@@ -15,7 +15,7 @@
             "image": "ahsoka/python-rush:3.7.12"
         },
         "flywheel": {
-            "suite": "TF 2.4.1 Suite"
+            "suite": "Metadata I/O"
         },
         "generator": "I have a fly, I have a wheel. Uh! Fly-Wheel!"
     },
