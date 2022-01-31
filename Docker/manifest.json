@@ -2,7 +2,7 @@
     "name": "fetal-brain-ohif",
     "label": "Fetal MRI Anatomy Measurement - OHIF",
     "description": "Deep Learning Model for Automatic Fetal Brain Landmark Localization in MRI.",
-    "version": "0.4.3d",
+    "version": "0.4.3e",
     "author": "Xuchu Liu",
     "maintainer": "xuchu_liu@rush.edu",
     "cite": "God loves All Beings",
@@ -30,7 +30,8 @@
             "description": "Selected AI json file"
         },
         "key": {
-            "base": "api-key"
+            "base": "api-key",
+            "read-only": true
         }
     },
     "config": {
