@@ -2,11 +2,12 @@ from pathlib import Path
 import pathvalidate as pv
 import sys
 import logging
+import json
 
 import flywheel
 import flywheel_gear_toolkit as gt
 
-from utils import load_data as ld, import_data as id, csv_utils as cu
+from utils import import_data as id, csv_utils as cu
 
 log = logging.getLogger()
 
@@ -27,8 +28,10 @@ def main(json_file, api_key, dry_run, output_dir, destination):
         # We now assume that this data is being uploaded to the group/project that the gear is being run on.
 
         # import the json file
-        df = ld.load_json_dataframe(json_file)
-        log.debug(df.info())
+        jf = open(json_file, 'r')
+        jsondata = json.load(jf)
+        jf.close
+        log.debug(jsondata)
 
         # # Format the data for ROI's from the data headers and upload to flywheel
         # df = id.import_data(fw, df, group, project, dry_run)
