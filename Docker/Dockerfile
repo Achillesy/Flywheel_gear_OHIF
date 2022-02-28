@@ -17,13 +17,8 @@ FROM ahsoka/python-rush:3.7.0
 
 ENV FLYWHEEL /flywheel/v0
 RUN mkdir -p $FLYWHEEL
+RUN pip install flywheel-sdk==16.4.0rc1
 
-COPY ohifimport.py $FLYWHEEL
+COPY analyze_json.py $FLYWHEEL
 COPY manifest.json $FLYWHEEL
-COPY run $FLYWHEEL
-
-COPY utils/load_data.py $FLYWHEEL
-COPY utils/import_data.py $FLYWHEEL
-COPY utils/ROI_Template.py $FLYWHEEL
-COPY utils/fwobject_utils.py $FLYWHEEL
-COPY utils/csv_utils.py $FLYWHEEL
+COPY OHIF_Template.py $FLYWHEEL
